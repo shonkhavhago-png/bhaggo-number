@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ভাগ্য সংখ্যা — ওয়েব অ্যাপ প্রোটোটাইপ</title>
+<style>
+:root{--bg:#071827;--panel:#102b40;--line:#2b5066;--gold:#ffd166;--green:#49e0ad;--muted:#afc3d1;--white:#f6f9fb}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0b3042,#071827 65%);color:var(--white);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif}
+header{padding:20px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #244458;flex-wrap:wrap}.logo{font-weight:900;color:var(--gold);font-size:20px}.pill{border:1px solid #45677b;border-radius:99px;padding:7px 12px;color:var(--muted);font-size:12px}
+main{width:min(1040px,92%);margin:28px auto 55px}.hero{text-align:center;margin-bottom:25px}.hero h1{font-size:clamp(28px,5vw,44px);margin:10px 0;color:var(--gold)}.hero p{max-width:720px;margin:auto;line-height:1.8;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(270px,.8fr);gap:18px}.card{background:#102b40ed;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 14px 40px #0002}.card h2{margin:0 0 8px;font-size:21px}.muted{color:var(--muted);font-size:13px;line-height:1.7}
+.numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:18px 0}.num{background:#081e2d;border:1px solid #43657a;color:white;border-radius:13px;padding:15px 4px;font-size:23px;font-weight:850;cursor:pointer}.num.on{background:var(--gold);color:#142331;border-color:var(--gold)}
+label{display:block;color:var(--muted);font-size:13px;margin:13px 0 6px}input,select{width:100%;border:1px solid #42677d;background:#081e2d;color:white;border-radius:11px;padding:12px;font:inherit}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.summary{background:#081e2d;padding:14px;border-radius:13px;line-height:2;margin-top:15px}.summary strong{color:var(--gold)}.btn{display:block;width:100%;padding:13px;border:0;border-radius:12px;background:var(--green);color:#06251e;font-weight:900;font-size:16px;cursor:pointer;margin-top:13px}.btn.alt{background:#29485d;color:white;border:1px solid #4a6d82}.btn:disabled{opacity:.5;cursor:not-allowed}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.tab{border:1px solid #416276;background:#0a2233;color:white;border-radius:10px;padding:9px 12px;cursor:pointer}.tab.active{background:#244c60;border-color:var(--green)}.notice{border:1px solid #886d30;background:#342d19;color:#ffe4a0;padding:12px;border-radius:12px;font-size:12px;line-height:1.7;margin-top:14px}.result{display:none;padding:12px;background:#082234;border-radius:12px;margin-top:12px;line-height:1.7}.list{padding-left:20px;line-height:1.9;color:var(--muted);font-size:14px}.small{font-size:11px;color:#91a9ba;text-align:center;margin-top:22px;line-height:1.8}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.card{padding:17px}.two{grid-template-columns:1fr}.numbers{gap:6px}.num{padding:13px 2px}}
+</style>
+</head>
+<body>
+<header><div class="logo">✦ ভাগ্য সংখ্যা</div><div class="pill">প্রোটোটাইপ • বাস্তব পেমেন্ট বন্ধ</div></header>
+<main>
+<section class="hero"><h1>আপনার পছন্দ, আপনার সংখ্যা</h1><p>১ থেকে ১০-এর মধ্যে সংখ্যা নির্বাচন করুন এবং আপনার পছন্দ সংরক্ষণের নমুনা দেখুন। এটি ওয়েব অ্যাপের প্রাথমিক প্রোটোটাইপ—এখনো বাস্তব অ্যাকাউন্ট, সার্ভার, ড্র বা টাকা লেনদেনের সঙ্গে সংযুক্ত নয়।</p></section>
+<div class="layout">
+<section class="card">
+<h2>১. সংখ্যা বেছে নিন</h2><div class="muted">একটি বা একাধিক সংখ্যা নির্বাচন করা যাবে।</div>
+<div class="numbers" id="nums"></div>
+<div class="two">
+<div><label for="amount">প্রতি সংখ্যার নমুনা মূল্য (টাকা)</label><select id="amount"><option value="10">১০ টাকা</option><option value="20">২০ টাকা</option><option value="50">৫০ টাকা</option><option value="100">১০০ টাকা</option></select></div>
+<div><label for="count">নির্বাচিত সংখ্যা</label><input id="count" value="০টি" readonly></div>
+</div>
+<div class="summary">নমুনা মোট মূল্য: <strong id="total">০ টাকা</strong><br>১০ গুণের উদাহরণ: <strong id="prize">০ টাকা</strong></div>
+<h2 style="margin-top:23px">২. পেমেন্ট পদ্ধতি (শুধু নমুনা)</h2>
+<div class="two"><div><label for="pay">পদ্ধতি</label><select id="pay"><option>বিকাশ</option><option>নগদ</option></select></div><div><label for="phone">মোবাইল নম্বর (ঐচ্ছিক)</label><input id="phone" placeholder="01XXXXXXXXX" inputmode="tel"></div></div>
+<button class="btn" id="save">নমুনা নির্বাচন সংরক্ষণ</button><button class="btn alt" id="clear">সব মুছে দিন</button>
+<div class="result" id="result" aria-live="polite"></div>
+<div class="notice">এই পেজে কোনো টাকা পাঠাবেন না। বিকাশ/নগদের আসল পেমেন্ট গেটওয়ে সংযুক্ত নয়; কোনো পেমেন্ট সম্পন্ন বা পুরস্কার নিশ্চিত হচ্ছে না।</div>
+</section>
+<aside class="card">
+<h2>ব্যবহারকারী অ্যাকাউন্ট</h2><div class="muted">পরবর্তী ডেভেলপমেন্টে বাস্তব সার্ভার-ভিত্তিক লগইন যোগ হবে। এই ফর্মটি কেবল ইন্টারফেসের নমুনা।</div>
+<label for="name">নাম</label><input id="name" placeholder="আপনার নাম">
+<label for="email">ইমেইল বা মোবাইল</label><input id="email" placeholder="ইমেইল / মোবাইল নম্বর">
+<label for="password">পাসওয়ার্ড</label><input id="password" type="password" placeholder="নমুনা: অন্তত ৮ অক্ষর">
+<div class="two"><button class="btn" id="signup">নমুনা নিবন্ধন</button><button class="btn alt" id="login">লগইন ডেমো</button></div>
+<div class="result" id="accountResult" aria-live="polite"></div>
+<div class="notice">নিরাপত্তার জন্য এই ডেমো কোনো অ্যাকাউন্ট তৈরি করে না এবং আপনার তথ্য কোথাও পাঠায় না। পাসওয়ার্ড বাস্তব তথ্য হিসেবে দেবেন না।</div>
+<hr style="border:0;border-top:1px solid #2b5066;margin:22px 0">
+<h2>অ্যাডমিন প্যানেলে যা থাকবে</h2>
+<ul class="list"><li>ব্যবহারকারী ও অ্যাকাউন্ট ব্যবস্থাপনা</li><li>সংখ্যা নির্বাচন ও রেকর্ড</li><li>ফলাফল প্রকাশের ইতিহাস ও অডিট লগ</li><li>পেমেন্ট স্ট্যাটাস যাচাই—অনুমোদিত গেটওয়ে হলে</li><li>অভিযোগ ও সহায়তা ব্যবস্থাপনা</li></ul>
+</aside>
+</div>
+<div class="small">প্রোডাকশন চালুর আগে আইনগত অনুমোদন, গোপনীয়তা নীতি, নিরাপদ ডেটাবেস, সার্ভার-ভিত্তিক ফলাফল ব্যবস্থা এবং বিকাশ/নগদের অনুমোদিত মার্চেন্ট ইন্টিগ্রেশন প্রয়োজন।</div>
+</main>
+<script>
+const chosen=new Set(), bn=n=>new Intl.NumberFormat('bn-BD').format(n);
+const nums=document.getElementById('nums');
+for(let i=1;i<=10;i++){let b=document.createElement('button');b.className='num';b.type='button';b.textContent=bn(i);b.setAttribute('aria-pressed','false');b.onclick=()=>{if(chosen.has(i)){chosen.delete(i);b.classList.remove('on');b.setAttribute('aria-pressed','false')}else{chosen.add(i);b.classList.add('on');b.setAttribute('aria-pressed','true')}update()};nums.appendChild(b)}
+function update(){let n=chosen.size,a=Number(document.getElementById('amount').value);document.getElementById('count').value=bn(n)+'টি';document.getElementById('total').textContent=bn(n*a)+' টাকা';document.getElementById('prize').textContent=bn(n*a*10)+' টাকা';document.getElementById('result').style.display='none'}
+document.getElementById('amount').onchange=update;
+document.getElementById('save').onclick=()=>{let r=document.getElementById('result');r.style.display='block';r.textContent=chosen.size?'নমুনা নির্বাচন: '+[...chosen].sort((a,b)=>a-b).map(bn).join(', ')+'। পদ্ধতি: '+document.getElementById('pay').value+'। মোট নমুনা মূল্য '+document.getElementById('total').textContent+'। কোনো পেমেন্ট নেওয়া হয়নি।':'আগে অন্তত একটি সংখ্যা বেছে নিন।'};
+document.getElementById('clear').onclick=()=>{chosen.clear();document.querySelectorAll('.num').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')});update();document.getElementById('phone').value=''};
+function account(msg){let r=document.getElementById('accountResult');r.style.display='block';r.textContent=msg}
+document.getElementById('signup').onclick=()=>{if(!document.getElementById('name').value.trim()||!document.getElementById('email').value.trim()||document.getElementById('password').value.length<8){account('নমুনা যাচাই: নাম, ইমেইল/মোবাইল এবং অন্তত ৮ অক্ষরের পাসওয়ার্ড লিখুন। বাস্তব অ্যাকাউন্ট তৈরি হবে না।')}else{account('ফর্ম যাচাই সফল হয়েছে। এটি ডেমো—অ্যাকাউন্ট সার্ভারে সংরক্ষণ করা হয়নি।')}};
+document.getElementById('login').onclick=()=>account('লগইন ডেমো: বাস্তব ব্যবহারকারী ডেটাবেস এখনো সংযুক্ত নয়।');
+update();
+</script>
+</body></html>
