@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ভাগ্য সংখ্যা</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f8f5;color:#173b30;font-family:Arial,"Noto Sans Bengali",sans-serif}
+header{background:linear-gradient(135deg,#075b43,#10936a);color:white;text-align:center;padding:28px 14px 34px}
+h1{margin:5px;font-size:30px}header p{margin:8px 0;color:#e4fff3}main{max-width:680px;margin:-18px auto 24px;padding:0 13px}
+.card{background:white;border-radius:17px;padding:19px;margin-bottom:14px;box-shadow:0 7px 22px #12352c0c}h2{font-size:20px;margin:0 0 10px}
+p{line-height:1.65}.muted{font-size:14px;color:#60776e}.numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:16px 0}
+.num{min-height:55px;border:2px solid #d8e8e0;border-radius:13px;background:#fafffc;font-size:22px;font-weight:bold;color:#12352c}
+.num.selected{background:#087f5b;color:white;border-color:#087f5b}.row{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #edf2ef;padding:12px 0}
+.primary{width:100%;padding:14px;border:0;border-radius:12px;background:#087f5b;color:white;font-size:17px;font-weight:bold}
+.result{display:none;background:#edf8f1;border-radius:12px;padding:13px;margin-top:12px;line-height:1.6}
+.notice{background:#fff8df;border:1px solid #f1df9c;border-radius:12px;padding:12px;color:#6a5311;font-size:13px;line-height:1.6}footer{text-align:center;color:#718078;font-size:12px;padding:8px 12px 26px}
+</style></head>
+<body>
+<header><div style="font-size:32px">🔢</div><h1>ভাগ্য সংখ্যা</h1><p>সংখ্যা বেছে নিন — ডেমো সংস্করণ</p></header>
+<main>
+<section class="card"><h2>আপনার সংখ্যা নির্বাচন করুন</h2>
+<p class="muted">১ থেকে ১০-এর মধ্যে এক বা একাধিক সংখ্যা বেছে নিন। এটি পরীক্ষামূলক ডেমো; এখানে প্রকৃত টাকা জমা বা পুরস্কার দেওয়া হয় না।</p>
+<div class="numbers" id="numbers"></div>
+<div class="row"><span>নির্বাচিত সংখ্যা</span><b id="count">০টি</b></div>
+<div class="row"><span>ডেমো মূল্য (প্রতি সংখ্যা ৳১০)</span><b id="price">৳০</b></div>
+<div class="row"><span>১০ গুণের উদাহরণ (বাস্তব পুরস্কার নয়)</span><b id="prize">৳০</b></div>
+<button class="primary" id="submit">ডেমো ফলাফল দেখুন</button><div class="result" id="result"></div>
+</section>
+<section class="card"><h2>ব্যবহারবিধি</h2><p class="muted">১. ১–১০ থেকে সংখ্যা নির্বাচন করুন।<br>২. ডেমো মূল্য দেখুন।<br>৩. “ডেমো ফলাফল দেখুন” চাপুন।</p>
+<div class="notice"><b>সতর্কতা:</b> এখানে আসল পেমেন্ট, ব্যবহারকারীর অ্যাকাউন্ট, টাকা তোলা বা বাস্তব পুরস্কার নেই। বাস্তব অর্থের লটারি বা পুরস্কারভিত্তিক কার্যক্রম চালুর আগে প্রযোজ্য আইন ও পেমেন্ট সেবাদাতার অনুমোদন যাচাই করুন।</div></section>
+</main><footer>© ভাগ্য সংখ্যা · পরীক্ষামূলক ডেমো</footer>
+<script>
+const chosen=new Set(),grid=document.getElementById('numbers');
+for(let i=1;i<=10;i++){let b=document.createElement('button');b.className='num';b.textContent=i;b.type='button';b.onclick=()=>{if(chosen.has(i)){chosen.delete(i);b.classList.remove('selected')}else{chosen.add(i);b.classList.add('selected')}update()};grid.appendChild(b)}
+function update(){let n=chosen.size;document.getElementById('count').textContent=n+'টি';document.getElementById('price').textContent='৳'+n*10;document.getElementById('prize').textContent='৳'+n*100;document.getElementById('result').style.display='none'}
+document.getElementById('submit').onclick=()=>{let box=document.getElementById('result');if(!chosen.size)box.textContent='আগে অন্তত একটি সংখ্যা নির্বাচন করুন।';else{let sample=Math.floor(Math.random()*10)+1;box.textContent='আপনার নির্বাচিত সংখ্যা: '+[...chosen].sort((a,b)=>a-b).join(', ')+'। নমুনা ডেমো ফলাফল: '+sample+'। এটি শুধু প্রদর্শনের জন্য; বাস্তব ড্র বা পুরস্কার নয়।'}box.style.display='block'}
+</script></body></html>
